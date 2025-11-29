@@ -1,7 +1,7 @@
 import json
 from cryptography.hazmat.primitives.asymmetric import ed25519
-from flask import Config
 from api.core.block import Block
+from api.config.env import Config
 
 
 class BlockChain:
@@ -71,6 +71,11 @@ class BlockChain:
         self.total_mining_time += block.mining_time
         self.number_of_blocks += 1
         self.chain.append(block)
+
+    def mine_block_from_data(self, block_data: dict) -> None:
+        """Mine and append a block from structured data (used by seeding tools)."""
+
+        self.__add_block(block_data)
 
     def update_difficulty(self):
         expected = self.target_block_time * self.retarget_interval
@@ -210,14 +215,16 @@ class BlockChain:
     def get_balance(self, address: str) -> float:
         return self.balances[address]
 
-    def reset(self):
-        """Resets block chain and wallets"""
+    def reset(self, alloc_wallet_address: str | None = None) -> None:
+        """Reset blockchain state; optionally start a new chain with a genesis block."""
         self.chain = []
         self.number_of_blocks = 0
         self.total_mining_time = 0
         self.memory_pool: list[dict] = []
         self.coin_base = Config.BLOCK_REWARD
         self.balances: dict[str, float] = {}
+        if alloc_wallet_address:
+            self.create_genesis_block(alloc_wallet_address)
 
     def __call__(self):
         return self.chain

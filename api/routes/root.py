@@ -14,6 +14,7 @@ def root():
                 "/v1/mempool",
                 "/v1/transactions",
                 "/v1/mine",
+                "/v1/mock/seed",
             ],
         }
     ).to_response()
