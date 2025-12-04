@@ -75,7 +75,6 @@ class RemineBlockSchema(BaseSchema):
 __all__ = [
     "WalletCreateSchema",
     "WalletBalanceSchema",
-    "CanSpendSchema",
     "MinerSchema",
     "TransactionBuildSchema",
     "TransactionApproveSchema",
