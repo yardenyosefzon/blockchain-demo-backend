@@ -63,13 +63,8 @@ class TransactionApproveSchema(BaseSchema):
     sign = StrippedString(required=True)
 
 
-class ChainBlockSchema(BaseSchema):
-    index = fields.Int(required=True, validate=validate.Range(min=0))
+class BlockUpdateSchema(BaseSchema):
     previous_hash = StrippedString(required=True)
-
-
-class RemineBlockSchema(BaseSchema):
-    index = fields.Int(required=True, validate=validate.Range(min=0))
 
 
 __all__ = [
@@ -78,6 +73,5 @@ __all__ = [
     "MinerSchema",
     "TransactionBuildSchema",
     "TransactionApproveSchema",
-    "ChainBlockSchema",
-    "RemineBlockSchema",
+    "BlockUpdateSchema",
 ]

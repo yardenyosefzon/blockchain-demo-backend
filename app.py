@@ -2,7 +2,7 @@
 from flask import Flask
 from api.config.env import Config
 from api.extensions import init_extensions
-from api.routes import api_bp
+from api.routes import api_v1_bp
 
 
 def create_app() -> Flask:
@@ -17,7 +17,7 @@ def create_app() -> Flask:
     app.config.from_object(Config)
 
     # Register REST API blueprint under /api
-    app.register_blueprint(api_bp, url_prefix="/v1")
+    app.register_blueprint(api_v1_bp, url_prefix="/v1")
 
     # Initialize extensions (e.g., CORS)
     return app

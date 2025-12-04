@@ -1,12 +1,20 @@
+from flask import Blueprint
+
 from api.state import bc, wallets
-from api.utils.response import ApiResponse, ApiError
+from api.utils.response import ApiError, ApiResponse
 from api.utils.validation import validate_json
 from api.schemas import TransactionBuildSchema, TransactionApproveSchema
 
-from . import api_bp
+transactions_bp = Blueprint("transactions", __name__, url_prefix="/transactions")
 
 
-@api_bp.post("/transaction/build_sign")
+@transactions_bp.get("/mempool")
+def mempool():
+    mempool_data = getattr(bc, "memory_pool", [])
+    return ApiResponse(data=list(mempool_data)).to_response()
+
+
+@transactions_bp.post("/draft")
 @validate_json(TransactionBuildSchema)
 def build_and_sign_transaction(data):
     """Build a canonical transaction and sign it using the backend wallet."""
@@ -30,10 +38,10 @@ def build_and_sign_transaction(data):
     return ApiResponse(data=result, status_code=201).to_response()
 
 
-@api_bp.post("/transaction/approve")
+@transactions_bp.post("/")
 @validate_json(TransactionApproveSchema)
-def approve_transaction(data):
-    """Approve/submit a signed transaction to the mempool."""
+def submit_transaction(data):
+    """Submit a signed transaction to the mempool."""
     accepted = bc.submit_signed_tx(data["tx"], data["pub"], data["sign"])
     if accepted:
         return ApiResponse(
